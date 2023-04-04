@@ -1,6 +1,3 @@
-# import sys
-# sys.path.append('c:/Users/Nayoung/OneDrive/Study/AI/BOOK/DL/DL_from_scratch_vol3/code/dezero')
-
 import numpy as np
 import os
 import subprocess

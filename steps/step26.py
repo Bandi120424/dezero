@@ -1,5 +1,6 @@
 import sys
-sys.path.append('c:/Users/Nayoung/OneDrive/Study/AI/BOOK/DL/DL_from_scratch_vol3/code/dezero')
+from dezero.config import path
+sys.path.append(path)
 
 import numpy as np
 from dezero.core_simple import as_variable
