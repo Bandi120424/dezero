@@ -1,5 +1,5 @@
 import sys
-from config import path
+from dezero.config import path
 sys.path.append(path)
 
 import numpy as np
