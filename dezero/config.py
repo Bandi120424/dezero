@@ -1,1 +1,1 @@
-path = 'c:/Users/Nayoung/OneDrive/Study/AI/BOOK/DL/DL_from_scratch_vol3/code/dezero'
+path = 'c:/Users/Nayoung/OneDrive/Study/AI/BOOK/DL/DL_from_scratch_vol3/code/dezero/dezero'
