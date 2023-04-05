@@ -1,6 +1,6 @@
 import sys
 from config import path
-#sys.path.append(path)
+sys.path.append(path)
 
 is_simple_core = True
 
