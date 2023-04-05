@@ -88,8 +88,10 @@ class Variable:
 
         add_func(self.creator)
 
-        while funcs:
+        while funcs: 
             f = funcs.pop()
+            
+            #역전파 계산(메인 처리)
             gys = [output().grad for output in f.outputs]  # output is weakref
             gxs = f.backward(*gys)
             if not isinstance(gxs, tuple):
@@ -136,6 +138,7 @@ class Function:
         """
         inputs = [as_variable(x) for x in inputs]
 
+        #순전파 계산
         xs = [x.data for x in inputs]
         ys = self.forward(*xs)
         if not isinstance(ys, tuple):
@@ -144,6 +147,7 @@ class Function:
 
         if Config.enable_backprop:
             self.generation = max([x.generation for x in inputs])
+            # set_creator method를 이용, 변수와 함수의 사이의 연결을 만들어줌
             for output in outputs:
                 output.set_creator(self)
             self.inputs = inputs
