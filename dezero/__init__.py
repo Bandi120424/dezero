@@ -1,5 +1,7 @@
 import sys
-sys.path.append('c:/Users/Nayoung/OneDrive/Study/AI/BOOK/DL/DL_from_scratch_vol3/code/dezero')
+from config import path
+print(path)
+sys.path.append(path)
 
 is_simple_core = True
 
