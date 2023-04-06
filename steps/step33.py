@@ -1,9 +1,10 @@
 import sys
-from dezero.config import path
+#from dezero.config import path
+path = 'c:/Users/Nayoung/OneDrive/Study/AI/BOOK/DL/DL_from_scratch_vol3/code/dezero/dezero'
 sys.path.append(path)
 
 import numpy as np
-from dezero import Variable
+from dezero.core import Variable
 
 def f(x):
     y = x ** 4 - 2 * x ** 2
