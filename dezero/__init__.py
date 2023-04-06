@@ -2,7 +2,7 @@ import sys
 from config import path
 sys.path.append(path)
 
-is_simple_core = True
+is_simple_core = False
 
 if is_simple_core:
     #print("okay")
@@ -14,8 +14,6 @@ if is_simple_core:
     from dezero.core_simple import as_variable
     from dezero.core_simple import setup_variable
     
-
-'''
 else:
     from dezero.core import Variable
     from dezero.core import Parameter
@@ -27,6 +25,7 @@ else:
     from dezero.core import as_variable
     from dezero.core import setup_variable
     from dezero.core import Config
+    '''
     from dezero.layers import Layer
     from dezero.models import Model
     from dezero.datasets import Dataset
@@ -42,7 +41,7 @@ else:
     import dezero.utils
     import dezero.cuda
     import dezero.transforms
-'''
+    '''
 
 '''
 Variable의 연산자들을 설정 
