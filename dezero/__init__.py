@@ -2,6 +2,7 @@ import sys
 from config import path
 sys.path.append(path)
 
+print(path)
 is_simple_core = False
 
 if is_simple_core:

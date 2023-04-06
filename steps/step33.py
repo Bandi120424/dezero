@@ -4,7 +4,7 @@ path = 'c:/Users/Nayoung/OneDrive/Study/AI/BOOK/DL/DL_from_scratch_vol3/code/dez
 sys.path.append(path)
 
 import numpy as np
-from dezero.core import Variable
+from dezero import Variable
 
 def f(x):
     y = x ** 4 - 2 * x ** 2
