@@ -1,14 +1,13 @@
 import weakref
 import numpy as np
 import contextlib
-import dezero
+
 
 # =============================================================================
 # Config
 # =============================================================================
 class Config:
     enable_backprop = True
-    train = True
 
 
 @contextlib.contextmanager
@@ -24,21 +23,10 @@ def using_config(name, value):
 def no_grad():
     return using_config('enable_backprop', False)
 
-def test_mode():
-    return using_config('train', False)
-
 
 # =============================================================================
 # Variable / Function
 # =============================================================================
-'''
-try:
-    import cupy
-    array_types = (np.ndarray, cupy.ndarray)
-except ImportError:
-    array_types = (np.ndarray)
-'''   
-
 class Variable:
     __array_priority__ = 200
 
@@ -81,21 +69,13 @@ class Variable:
     def set_creator(self, func):
         self.creator = func
         self.generation = func.generation + 1
-        
-    def unchain(self):
-        self.creator = None
 
     def cleargrad(self):
         self.grad = None
 
-    def backward(self, retain_grad=False, create_graph=False):
-        '''
-        역전파가 단 1회만 수행되는 경우가 많기 때문에 create_graph = False로 설정, 
-        2차 이상의 미분이 필요하면 True로 설정 
-        '''
+    def backward(self, retain_grad=False, create_graph = False):
         if self.grad is None:
-            xp = dezero.cuda.get_array_module(self.data)
-            self.grad = Variable(xp.ones_like(self.data))
+            self.grad = Variable(np.ones_like(self.data))
 
         funcs = []
         seen_set = set()
@@ -107,11 +87,14 @@ class Variable:
                 funcs.sort(key=lambda x: x.generation)
 
         add_func(self.creator)
-        while funcs:
-            f = funcs.pop()
-            gys = [output().grad for output in f.outputs]  # output is weakref
 
-            with using_config('enable_backprop', create_graph):
+        while funcs: 
+            f = funcs.pop()
+            
+            #역전파 계산(메인 처리)
+            gys = [output().grad for output in f.outputs]  # output is weakref
+            
+            with using_config('enable_backprop', create_graph): #실제 역전파 처리 수행
                 gxs = f.backward(*gys)
                 if not isinstance(gxs, tuple):
                     gxs = (gxs,)
@@ -125,47 +108,10 @@ class Variable:
                     if x.creator is not None:
                         add_func(x.creator)
 
-            if not retain_grad:
-                for y in f.outputs:
-                    y().grad = None  # y is weakref
-                    
-    def unchain_backward(self):
-            if self.creator is not None:
-                funcs = [self.creator]
-                while funcs:
-                    f = funcs.pop()
-                    for x in f.inputs:
-                        if x.creator is not None:
-                            funcs.append(x.creator)
-                            x.unchain()
-                            
-    def reshape(self, *shape):
-        if len(shape) == 1 and isinstance(shape[0], (tuple, list)):
-            shape = shape[0]
-        return dezero.functions.reshape(self, shape)
+                if not retain_grad:
+                    for y in f.outputs:
+                        y().grad = None  # y is weakref
 
-    def transpose(self, *axes):
-        if len(axes) == 0:
-            axes = None
-        elif len(axes) == 1:
-            if isinstance(axes[0], (tuple, list)) or axes[0] is None:
-                axes = axes[0]
-        return dezero.functions.transpose(self, axes)
-
-    @property
-    def T(self):
-        return dezero.functions.transpose(self)
-
-    def sum(self, axis=None, keepdims=False):
-        return dezero.functions.sum(self, axis, keepdims)
-
-    def to_cpu(self):
-        if self.data is not None:
-            self.data = dezero.cuda.as_numpy(self.data)
-
-    def to_gpu(self):
-        if self.data is not None:
-            self.data = dezero.cuda.as_cupy(self.data)
 
 def as_variable(obj):
     if isinstance(obj, Variable):
@@ -241,7 +187,7 @@ class Mul(Function):
         return y
 
     def backward(self, gy):
-        x0, x1 = self.inputs[0].data, self.inputs[1].data
+        x0, x1 = self.inputs
         return gy * x1, gy * x0
 
 
@@ -287,7 +233,7 @@ class Div(Function):
         return y
 
     def backward(self, gy):
-        x0, x1 = self.inputs[0].data, self.inputs[1].data
+        x0, x1 = self.inputs
         gx0 = gy / x1
         gx1 = gy * (-x0 / x1 ** 2)
         return gx0, gx1
@@ -312,7 +258,7 @@ class Pow(Function):
         return y
 
     def backward(self, gy):
-        x = self.inputs[0].data
+        x = self.inputs
         c = self.c
 
         gx = c * x ** (c - 1) * gy
