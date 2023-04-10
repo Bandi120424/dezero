@@ -2,7 +2,6 @@ import weakref
 import numpy as np
 import contextlib
 
-
 # =============================================================================
 # Config
 # =============================================================================
@@ -258,7 +257,7 @@ class Pow(Function):
         return y
 
     def backward(self, gy):
-        x = self.inputs
+        x = self.inputs[0]
         c = self.c
 
         gx = c * x ** (c - 1) * gy

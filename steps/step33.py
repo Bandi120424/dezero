@@ -1,6 +1,7 @@
-if '__file__' in globals():
-    import os, sys
-    sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+import sys 
+from config import path
+sys.path.append(path)
+    
 import numpy as np
 from dezero.core import Variable
 
@@ -9,6 +10,14 @@ def f(x):
     return y
 
 x = Variable(np.array(2.0))
+y = f(x)
+y.backward(create_graph = True)
+print(x.grad)
+
+gx = x.grad
+gx.backward()
+print(x.grad)
+'''
 iters = 10
 
 for i in range(iters):
@@ -24,3 +33,4 @@ for i in range(iters):
     gx2 = x.grad
 
     x.data -= gx.data / gx2.data
+'''
