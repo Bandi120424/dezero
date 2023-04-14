@@ -60,6 +60,28 @@ def reshape(x, shape):
         return as_variable(x)
     return Reshape(shape)(x)
 
+class Transpose(Function):
+    # def __init__(self, axes=None):
+    #     self.axes = axes
+
+    def forward(self, x):
+        y = np.transpose(x)
+        return y
+
+    def backward(self, gy):
+        gx = transpose(gy)
+        return gx
+    
+    # def backward(self, gy):
+    #     if self.axes is None:
+    #         return transpose(gy)
+
+    #     axes_len = len(self.axes)
+    #     inv_axes = tuple(np.argsort([ax % axes_len for ax in self.axes]))
+    #     return transpose(gy, inv_axes)
+
+def transpose(x):
+    return Transpose()(x)
 
 # class Sum(Function):
 #     # def __init__(self, axis, keepdims):
