@@ -1,6 +1,7 @@
 import weakref
 import numpy as np
 import contextlib
+import dezero 
 
 # =============================================================================
 # Config
@@ -64,6 +65,11 @@ class Variable:
             return 'variable(None)'
         p = str(self.data).replace('\n', '\n' + ' ' * 9)
         return 'variable(' + p + ')'
+    
+    def reshape(self, *shape):
+            if len(shape) == 1 and isinstance(shape[0], (tuple, list)):
+                shape = shape[0]
+            return dezero.functions.reshape(self, shape)
 
     def set_creator(self, func):
         self.creator = func
