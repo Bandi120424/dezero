@@ -57,6 +57,10 @@ class Variable:
     def dtype(self):
         return self.data.dtype
 
+    @property
+    def T(self):
+        return dezero.functions.transpose(self)
+    
     def __len__(self):
         return len(self.data)
 
@@ -119,6 +123,11 @@ class Variable:
     
     def sum(self, axis=None, keepdims = False):
         return dezero.functions.sum(self, axis, keepdims)
+    
+    def transpose(self):
+        return dezero.functions.transpose(self)
+    
+    
 
 
 def as_variable(obj):
