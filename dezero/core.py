@@ -127,9 +127,10 @@ class Variable:
     def transpose(self):
         return dezero.functions.transpose(self)
     
+    def exp(self):
+        return dezero.functions.exp(self)
+        
     
-
-
 def as_variable(obj):
     if isinstance(obj, Variable):
         return obj
@@ -179,6 +180,12 @@ class Function:
 
     def backward(self, gys):
         raise NotImplementedError()
+
+# =============================================================================
+# Parameter
+# =============================================================================
+class Parameter(Variable):
+    pass
 
 
 # =============================================================================
