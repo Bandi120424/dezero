@@ -71,8 +71,8 @@ class Linear(Layer):
     def forward(self, x):
         if self.W.data is None:
             self.in_size = x.shape[1]
-            xp = cuda.get_array_module(x)
-            self._init_W(xp)
+            # xp = cuda.get_array_module(x)
+            self._init_W()
 
         y = F.linear(x, self.W, self.b)
         return y
