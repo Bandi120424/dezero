@@ -203,6 +203,21 @@ def linear_simple(x, W, b=None):
     t.data = None  # Release t.data (ndarray) for memory efficiency
     return y
 
+class Exp(Function):
+    def forward(self, x):
+        #xp = cuda.get_array_module(x)
+        y = np.exp(x)
+        return y
+
+    def backward(self, gy):
+        x = self.inputs
+        gx = np.exp(x)*gy
+        return gx
+
+
+def exp(x):
+    return Exp()(x)
+ 
 # =============================================================================
 # activation function: sigmoid / relu / softmax / log_softmax / leaky_relu
 # =============================================================================
@@ -211,12 +226,11 @@ def sigmoid_simple(x):
     y = 1 / (1 + exp(-x))
     return y
 
-
 class Sigmoid(Function):
     def forward(self, x):
-        xp = cuda.get_array_module(x)
-        # y = 1 / (1 + xp.exp(-x))
-        y = xp.tanh(x * 0.5) * 0.5 + 0.5  # Better implementation
+        #xp = cuda.get_array_module(x)
+        y = 1 / (1 + exp(-x))
+        #y = xp.tanh(x * 0.5) * 0.5 + 0.5  # Better implementation
         return y
 
     def backward(self, gy):
@@ -228,7 +242,7 @@ class Sigmoid(Function):
 def sigmoid(x):
     return Sigmoid()(x)
 
-
+'''
 class ReLU(Function):
     def forward(self, x):
         xp = cuda.get_array_module(x)
@@ -314,3 +328,4 @@ class LeakyReLU(Function):
 
 def leaky_relu(x, slope=0.2):
     return LeakyReLU(slope)(x)
+'''
